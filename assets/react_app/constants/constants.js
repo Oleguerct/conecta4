@@ -1,0 +1,4 @@
+export const colorMap = {
+    1: 'red',
+    2: 'yellow',
+  };
