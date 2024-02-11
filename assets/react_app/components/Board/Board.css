@@ -1,0 +1,39 @@
+.board{
+    width: fit-content;
+    display: block;
+    background-color: blue;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: #000 2px 2px 5px;
+    .columns{
+        display: flex;
+        flex-flow: wrap;
+        column-gap: 5px;
+        .column{
+            display: flex;
+            flex-flow: column;
+            flex-direction: column-reverse;
+            row-gap: 5px;
+            .hole{
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+                background-color: var(--main-bg-color);
+                border: 2px solid #000;
+                box-sizing: border-box;
+                &.red{
+                    background-color: red;
+                }
+                &.yellow{
+                    background-color: yellow;
+                }
+            }
+            button{
+                margin-bottom: 10px;
+                &.nes-btn{
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+  }

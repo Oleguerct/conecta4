@@ -11,6 +11,23 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
+
+
+    // get user by session
+    #[Route('/user/get_by_session', name: 'app_user')]
+    public function get_by_session(Request $request, UserRepository $userRepository): Response
+    {
+        $session = $request->getSession();
+
+        if($userID = $session->get('user_id')){
+            $user = $userRepository->find($userID);
+        }else{
+            return $this->json(null, 204);
+        }
+
+        return $this->json($user);
+    }
+
     #[Route('/user/current-game', name: 'app_user_get_game')]
     public function index(Request $request,UserRepository $userRepository): Response
     {
@@ -22,11 +39,11 @@ class UserController extends AbstractController
             return $this->json(['error' => 'Not logged user'], 400);
         }
 
-        if ($game = $user->getCurrentGame()){
-            return $this->json($game);
+        if ($game = $user->getGame()){
+            return $this->json($game, $game == null ? 204 : 200);
         }
 
-        return $this->json(['error' => 'No game found'], 400);
+        return new Response(null,204);
 
     }
 
@@ -41,8 +58,9 @@ class UserController extends AbstractController
             throw new \Exception('User must be logged in to left game');
         }
 
-        $currentGame = $user->getCurrentGame();
+        $currentGame = $user->getGame();
         $user->setCurrentGame(null);
+        $currentGame->removePlayer($user);
         $entityManager->flush();
 
         return $this->json($user);

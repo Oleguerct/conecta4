@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Game;
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,4 +54,45 @@ class MainController extends AbstractController
 
         return $this->render('main/js.html.twig');
     }
+
+    #[Route('/test', name: 'app_test')]
+    public function test(HubInterface $hub, EntityManagerInterface $entityManager): Response
+    {
+
+        $user1 = new User();
+        $user1->setUsername('Joan');
+
+        $user2 = new User();
+        $user2->setUsername('Pep');
+
+        $game = new Game();
+        $game->setTitle('Game X');
+
+        $user1->setGameAsPlayer1($game);
+        $user2->setGameAsPlayer2($game);
+
+        $game->setPlayer1($user2);
+        $game->setPlayer2($user1);
+
+        $entityManager->persist($user1);
+        $entityManager->persist($user2);
+        $entityManager->persist($game);
+        $entityManager->flush();
+
+
+        //dd($user1);
+
+        echo 'Game.player1 is '.$game->getPlayer1()->getUsername();
+        echo '<br>';
+        echo 'Game.player2 is '.$game->getPlayer2()->getUsername();
+        echo '<br>';
+        echo '<br>';
+        echo 'Player1.game is '.$user1->getGameAsPlayer1()->getTitle();
+        echo '<br>';
+        echo 'Player2.game is '.$user2->getGameAsPlayer2()->getTitle();
+
+
+        return $this->render('base.html.twig');
+    }
+
 }

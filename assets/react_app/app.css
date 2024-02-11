@@ -1,51 +1,10 @@
-.board{
-  width: fit-content;
-  display: block;
-  background-color: blue;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: #000 2px 2px 5px;
-  .columns{
-      display: flex;
-      flex-flow: wrap;
-      column-gap: 5px;
-      .column{
-          display: flex;
-          flex-flow: column;
-          flex-direction: column-reverse;
-          row-gap: 5px;
-          .hole{
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              background-color: var(--main-bg-color);
-              border-style: groove;
-              &.red{
-                  background-color: red;
-              }
-              &.yellow{
-                  background-color: yellow;
-              }
-          }
-          .button{
-              display: block;
-              margin-bottom: 10px;
-              border: none;
-              border-radius: 3px;
-              background: var(--main-bg-color);
-              border-style: groove;
-
-              &:hover{
-                  background-color: #000;
-                  &.red{
-                      background-color: red;
-                  }
-                  &.yellow{
-                      background-color: yellow;
-                  }
-              }
-
-          }
-      }
-  }
+:root {
+    --main-bg-color: #e7e7e7;
 }
+
+#root{
+    height: 100vh;
+    width: 100%;
+    background-color: var(--main-bg-color);
+}
+

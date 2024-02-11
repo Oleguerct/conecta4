@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class GameController extends AbstractController
 {
@@ -33,18 +32,31 @@ class GameController extends AbstractController
             throw new \Exception('User must be logged in to create a game');
         }
 
-        $user->setCurrentGame(null);
+        if($user->getGame()){
+            $user->getGame()->removePlayer($user);
+        }
+
+        //$user->setCurrentGame(null);
         $entityManager->flush();
 
         $game = new Game();
         $game->setTitle($gameName);
         $game->addPlayer($user);
-        $game->setPlayer1ID($user->getId());
-        $game->setTurn(1);
         $entityManager->persist($game);
         $entityManager->flush();
 
         return $this->json($game);
+
+    }
+
+    #[Route('/game/get_available', name: 'app_game_get_available')]
+    public function get_available(
+        GameRepository $gameRepository
+    ): Response
+    {
+
+        $games = $gameRepository->findAvailableToPlay();
+        return $this->json($games, 200,[],['groups' => 'game:read']);
 
     }
 
@@ -65,9 +77,12 @@ class GameController extends AbstractController
             throw new \Exception('User must be logged in to join a game');
         }
 
+        if($user->getGame()){
+            $user->getGame()->removePlayer($user);
+        }
+
         $game = $gameRepository->find($gameId);
         $game->addPlayer($user);
-        $game->setPlayer2ID($user->getId());
         $entityManager->flush();
 
         return $this->json($game);
@@ -91,7 +106,7 @@ class GameController extends AbstractController
         }
 
 
-        $game = $user->getCurrentGame();
+        $game = $user->getGame();
 
         if($game->getWinner()) return new Response(null,403);
 
@@ -102,5 +117,12 @@ class GameController extends AbstractController
 
         return new Response(null,200);
 
+    }
+
+    #[Route('/game/get/{id}', name: 'app_get_game')]
+    public function get_game(int $id, GameRepository $gameRepository)
+    {
+        $game = $gameRepository->find($id);
+        return $this->json($game, 200, [],['groups' => 'game:read']);
     }
 }

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { GameContext } from '../context/gameContext.jsx';
 import { useContext } from 'react';
 import getMercureIRIUrl from '../services/mercureURLHandler.js';
+import getFullPath from '../../../src/Service/getFullPath.js';
 
 function ShowGames(){
 
-    const [games, setGames] = useState(null);
+    const [games, setGames] = useState([]);
     const context = useContext(GameContext)
     const [needUpdateGames, setNeedUpdateGames] = useState(true);
 
@@ -13,7 +14,7 @@ function ShowGames(){
     
         if(!needUpdateGames) return;
 
-        fetch('http://127.0.0.1:8000/api/games')
+        fetch(getFullPath('game/get_available'))
         .then((response) => response.json())
         .then((data) => {
             setGames(data)
@@ -35,31 +36,32 @@ function ShowGames(){
     
 
     const joinGame = (id) => {
-        fetch(`http://127.0.0.1:8000/game/join/${id}`) 
+        fetch(getFullPath(`game/join/${id}`)) 
             .then((response) => response.json())
             .then(game => {
                 context.setGame(game);
-                const mercureIRIURL = getMercureIRIUrl(`https://example.com/game/${game.id}`);
-                const eventSource = new EventSource(mercureIRIURL);
-                eventSource.onmessage = event => {
-                    console.log(event.data);
-                    context.setGame(JSON.parse(event.data));
-                }
             })
     }
 
     return (
-        <>
-            {games && (
-                <ul>
-                    {games.map(game => 
-                        <li key={game.id}>
-                            <button onClick={() => {joinGame(game.id)}}>Join</button> {game.title}
-                        </li>)
-                    }
-                </ul>
-            )}
-        </>
+        <div id='game-list'>
+            <div className='nes-container with-title is-dark'>
+                <p className='title'>Available games</p>
+                <div className='lists'>
+                    <ul className='nes-list is-circle'>
+                        {games.map(game => 
+                            <li key={game.id}>
+                                <label>
+                                    Game: {game.title} - Started by {game.player1.username} <button className='nes-btn' onClick={() => {joinGame(game.id)}}>Join</button> 
+                                </label>
+                                
+                            </li>)
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     )
 }
 

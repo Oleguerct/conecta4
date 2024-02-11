@@ -37,17 +37,15 @@ class GameMoverService
             throw new \Exception('You need to set the game before make a movement');
         }
 
-        $turn = $this->game->getTurn();
-        $this->turnToIDHelper->setGame($this->game);
-        $currentPlayer = $this->turnToIDHelper->getID($turn);
+        $currentPlayer = $this->game->getCurrentPlayerID();
         if($user->getId() !== $currentPlayer){
-            throw new \Exception('Is not your turn');
+            throw new \Exception('Is not your turn',403);
         }
 
         $board = $this->game->getBoard();
         foreach ($board[$column] as $key => $value){
             if($value == 0){
-                $board[$column][$key] = $turn;
+                $board[$column][$key] = $this->game->getTurn();
                 $this->game->setBoard($board);
                 $this->game->passTurn();
                 return;

@@ -21,6 +21,18 @@ class GameRepository extends ServiceEntityRepository
         parent::__construct($registry, Game::class);
     }
 
+    public function findAvailableToPlay(): array
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.player1 is not null')
+            ->andWhere('g.player2 is null')
+            ->andWhere('g.winner is NULL')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
 //    /**
 //     * @return Game[] Returns an array of Game objects
 //     */

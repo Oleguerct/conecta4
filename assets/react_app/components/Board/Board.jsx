@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Column from './Column.jsx';
 import { useContext } from 'react';
 import { GameContext } from '../../context/gameContext.jsx';
+import './Board.css';
 
 function Board(){ 
   

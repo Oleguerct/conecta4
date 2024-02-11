@@ -26,7 +26,7 @@ class GameUpdateMercureDispatcher
     {
         $update = new Update(
             'https://example.com/game/'.$game->getId(),
-            $this->serializer->serialize($game,'json')
+            $this->serializer->serialize($game,'json',['groups' => 'game:read'])
         );
         $this->hub->publish($update);
     }

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import Hole from './Hole.jsx';
-import { colorMap } from '../../constants/constants.js'
-
+import getFullPath from '../../../../src/Service/getFullPath.js';
 
 function makeMovement(columnKey){
   console.log('MOVE!');
-  fetch(`http://127.0.0.1:8000/game/move/${columnKey}`)
+  fetch(getFullPath(`game/move/${columnKey}`))
     .then(response => {
       if(response.ok){
         return response.json()
@@ -30,7 +29,7 @@ function Column({columnKey, columnValues,  winner, currentPlayer}){
             <Hole key={index} holeState={state}></Hole>
           )
         }
-        <button onClick={() => makeMovement(columnKey)} className={`button ${colorMap[currentPlayer]}`} disabled={isFull || winner} >Add<br></br> token</button>
+        <button onClick={() => makeMovement(columnKey)} className='nes-btn' disabled={isFull || winner} >play</button>
       </div>
     )
   }
